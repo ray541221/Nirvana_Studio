@@ -28,6 +28,16 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Setup Python for artwork previews
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build lightweight artwork previews
+        run: |
+          python -m pip install Pillow==11.3.0
+          python scripts/build-thumbnails.py
+
       - name: Build web-optimized homepage videos
         run: |
           if ! command -v ffmpeg >/dev/null; then
