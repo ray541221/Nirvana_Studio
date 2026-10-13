@@ -15,8 +15,8 @@
     .video-stage { position: relative; width: 100%; height: 100%; background: #000; }
     video { width: 100%; height: 100%; display: block; object-fit: cover; background: #000; }
     .page-actions {
-      position: fixed; top: auto; right: 20px; bottom: 20px; z-index: 2;
-      display: flex; gap: 9px; flex-wrap: wrap; justify-content: flex-end;
+      position: fixed; top: auto; right: 20px; bottom: 20px; z-index: 3;
+      display: flex; flex-direction: column; align-items: flex-end; gap: 2px; justify-content: flex-end;
     }
     .page-link {
       border: 1px solid rgba(255, 215, 0, .55); border-radius: 999px; padding: 12px 18px;
@@ -24,11 +24,10 @@
       font-weight: 700; line-height: 1; text-decoration: none; cursor: pointer;
     }
     .audio-toggle {
-      position: fixed; top: 20px; right: 20px; z-index: 3; width: 50px; height: 50px;
-      display: grid; place-items: center; padding: 0; border: 1px solid rgba(215, 181, 109, .8);
-      border-radius: 50%; color: #D7B56D; background: rgba(80, 80, 80, .88); cursor: pointer;
+      position: static; width: 60px; height: 56px; display: grid; place-items: center;
+      padding: 0; border: 0; border-radius: 0; color: #D7B56D; background: transparent; cursor: pointer;
     }
-    .audio-toggle svg { width: 31px; height: 31px; display: block; }
+    .audio-toggle svg { width: 46px; height: 46px; display: block; }
     .page-link { padding: 11px 16px; font-size: 14px; font-weight: 700; }
     @media (max-width: 768px), (max-aspect-ratio: 1/1) {
       main { display: grid; place-items: center; }
@@ -37,19 +36,15 @@
       .page-actions {
         top: auto; left: auto; right: max(14px, env(safe-area-inset-right));
         bottom: max(12px, env(safe-area-inset-bottom)); max-width: calc(100vw - 28px);
-        gap: 8px; justify-content: flex-end;
+        gap: 2px; justify-content: flex-end;
       }
       .page-link {
         border-color: rgba(255, 215, 0, .5); color: rgba(255, 215, 0, .5) !important;
         padding: 9px 13px; font-size: 13px;
       }
       .page-link { padding: 9px 13px; font-size: 13px; }
-      .audio-toggle {
-        top: max(12px, env(safe-area-inset-top)); right: max(14px, env(safe-area-inset-right));
-        left: auto; width: 44px; height: 44px; border-color: rgba(255, 215, 0, .5);
-        background: rgba(80, 80, 80, .88);
-      }
-      .audio-toggle svg { width: 28px; height: 28px; }
+      .audio-toggle { width: 58px; height: 54px; border: 0; background: transparent; }
+      .audio-toggle svg { width: 42px; height: 42px; }
     }
   </style>
 </head>
@@ -58,15 +53,15 @@
     <div class="video-stage">
       <video id="heroVideo" poster="./assets/video/hero-poster.jpg" preload="auto" autoplay muted loop playsinline disableRemotePlayback x-webkit-airplay="deny" aria-label="Nirvana Studio 首頁影片"></video>
       <noscript><p><a href="./assets/video/hero-720p.mp4">播放首頁影片</a></p></noscript>
-      <button class="audio-toggle" id="audioToggle" type="button" aria-label="開啟背景音樂" aria-pressed="false" title="開啟背景音樂">
-        <svg viewBox="0 0 360 360" aria-hidden="true" focusable="false">
-          <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M84 154h44l66-54v160l-66-54H84z" stroke-width="18"/>
-            <path d="M112 108l154 144" stroke-width="21"/>
-          </g>
-        </svg>
-      </button>
       <nav class="page-actions" aria-label="頁面導覽">
+        <button class="audio-toggle" id="audioToggle" type="button" aria-label="開啟背景音樂" aria-pressed="false" title="開啟背景音樂">
+          <svg viewBox="0 0 360 360" aria-hidden="true" focusable="false">
+            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M84 154h44l66-54v160l-66-54H84z" stroke-width="18"/>
+              <path d="M112 108l154 144" stroke-width="21"/>
+            </g>
+          </svg>
+        </button>
         <a class="page-link" href="./page2.html#works" aria-label="進入作品區">進入 <span aria-hidden="true">→</span></a>
       </nav>
     </div>
