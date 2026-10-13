@@ -58,7 +58,7 @@
           <svg viewBox="0 0 360 360" aria-hidden="true" focusable="false">
             <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M84 154h44l66-54v160l-66-54H84z" stroke-width="18"/>
-              <path d="M112 108l154 144" stroke-width="21"/>
+              <path data-audio-slash d="M112 108l154 144" stroke-width="21"/>
             </g>
           </svg>
         </button>
@@ -116,6 +116,8 @@
     function updateAudioButton() {
       const soundOn = !heroVideo.muted && heroVideo.volume > 0;
       const label = soundOn ? '關閉背景音樂' : '開啟背景音樂';
+      const slash = audioToggle.querySelector('[data-audio-slash]');
+      if (slash) slash.hidden = soundOn;
       audioToggle.setAttribute('aria-label', label);
       audioToggle.title = label;
       audioToggle.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
