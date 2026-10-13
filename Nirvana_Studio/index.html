@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" as="image" href="./assets/video/hero-poster.jpg" fetchpriority="high">
   <title>網站首頁影音</title>
   <style>
     * {
@@ -139,7 +140,7 @@
 <body>
   <main>
     <div class="video-stage">
-      <video id="heroVideo" poster="./assets/video/hero-poster.jpg" preload="auto" autoplay muted loop playsinline controls></video>
+      <video id="heroVideo" poster="./assets/video/hero-poster.jpg" preload="auto" muted loop playsinline aria-label="Nirvana Studio 首頁影片"></video>
       <noscript><p><a href="./assets/video/hero-720p.mp4">播放首頁影片</a></p></noscript>
       <button class="audio-toggle" id="audioToggle" type="button" aria-pressed="false">開啟背景音樂</button>
       <nav class="page-actions" aria-label="頁面導覽">
@@ -152,14 +153,57 @@
     const heroVideo = document.querySelector('#heroVideo');
     const audioToggle = document.querySelector('#audioToggle');
 
-    // Select once, before loading: do not download the large source on phones
-    // or restart playback when the viewport or connection changes.
+    const MIN_BUFFER_SECONDS = 3;
     const connection = navigator.connection;
-    const useLightVideo = window.matchMedia('(max-width: 1024px), (pointer: coarse)').matches
-      || (connection && (connection.saveData || /(^|-)2g$|^3g$/.test(connection.effectiveType)));
-    heroVideo.src = useLightVideo
-      ? './assets/video/hero-720p.mp4'
-      : './assets/video/hero-1080p.mp4';
+    const isFastLargeDesktop = window.matchMedia('(min-width: 1600px)').matches
+      && connection
+      && connection.effectiveType === '4g'
+      && Number(connection.downlink) >= 8
+      && !connection.saveData;
+    const mp4Source = isFastLargeDesktop
+      ? './assets/video/hero-1080p.mp4'
+      : './assets/video/hero-720p.mp4';
+    const canPlayWebm = heroVideo.canPlayType('video/webm; codecs="vp9, opus"') !== '';
+    const preferredSource = canPlayWebm && !isFastLargeDesktop
+      ? './assets/video/hero-720p.webm'
+      : mp4Source;
+    let playbackStarted = false;
+
+    heroVideo.src = preferredSource;
+    heroVideo.load();
+
+    function bufferedAhead() {
+      const currentTime = heroVideo.currentTime;
+      for (let i = 0; i < heroVideo.buffered.length; i += 1) {
+        if (currentTime >= heroVideo.buffered.start(i) && currentTime <= heroVideo.buffered.end(i)) {
+          return heroVideo.buffered.end(i) - currentTime;
+        }
+      }
+      return 0;
+    }
+
+    async function tryStartPlayback() {
+      if (playbackStarted || heroVideo.readyState < HTMLMediaElement.HAVE_FUTURE_DATA) return;
+      if (bufferedAhead() < MIN_BUFFER_SECONDS) return;
+      try {
+        await heroVideo.play();
+        playbackStarted = true;
+        window.clearInterval(bufferPoll);
+      } catch (error) {
+        // Keep the poster visible if autoplay is blocked by the browser.
+      }
+    }
+
+    const bufferPoll = window.setInterval(tryStartPlayback, 250);
+    heroVideo.addEventListener('loadeddata', tryStartPlayback);
+    heroVideo.addEventListener('canplay', tryStartPlayback);
+    heroVideo.addEventListener('progress', tryStartPlayback);
+    heroVideo.addEventListener('error', () => {
+      if (heroVideo.src.endsWith('.webm')) {
+        heroVideo.src = './assets/video/hero-720p.mp4';
+        heroVideo.load();
+      }
+    }, { once: true });
 
     function updateAudioButton() {
       const soundOn = !heroVideo.muted && heroVideo.volume > 0;
@@ -171,7 +215,11 @@
       heroVideo.muted = !enabled;
       heroVideo.volume = enabled ? 1 : 0;
       try {
-        await heroVideo.play();
+        if (!playbackStarted) {
+          await tryStartPlayback();
+        } else {
+          await heroVideo.play();
+        }
       } catch (error) {
         heroVideo.muted = true;
       }
