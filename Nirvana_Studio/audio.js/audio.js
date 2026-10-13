@@ -4,6 +4,8 @@
   if (!toggle || !audio) return;
 
   let soundOn = false;
+  audio.src = './assets/ambient-cinematic-portfolio.mp3';
+  audio.preload = 'metadata';
   audio.loop = true;
   audio.muted = true;
   audio.volume = 0;
@@ -18,33 +20,38 @@
     toggle.setAttribute('aria-pressed', String(soundOn));
   };
 
-  const setAudio = async enabled => {
-    if (!enabled) {
-      audio.pause();
-      audio.muted = true;
-      audio.volume = 0;
-      soundOn = false;
-      updateAudioButton();
-      return;
-    }
+  const stopAudio = () => {
+    audio.pause();
+    audio.muted = true;
+    audio.volume = 0;
+    soundOn = false;
+    updateAudioButton();
+  };
 
+  const startAudio = async () => {
     audio.muted = false;
     audio.volume = 0.28;
     try {
       await audio.play();
-      soundOn = true;
+      soundOn = !audio.paused && !audio.muted;
     } catch {
-      audio.muted = true;
-      audio.volume = 0;
-      soundOn = false;
+      stopAudio();
+      return;
     }
     updateAudioButton();
   };
 
-  toggle.addEventListener('click', () => setAudio(!soundOn));
-  audio.addEventListener('volumechange', () => {
-    soundOn = !audio.muted && audio.volume > 0 && !audio.paused;
+  toggle.addEventListener('click', () => {
+    if (soundOn) stopAudio();
+    else startAudio();
+  });
+  audio.addEventListener('play', () => {
+    soundOn = !audio.muted;
     updateAudioButton();
   });
+  audio.addEventListener('pause', () => {
+    if (audio.ended || !soundOn) stopAudio();
+  });
+  audio.addEventListener('error', stopAudio);
   updateAudioButton();
 })();
