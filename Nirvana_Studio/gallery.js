@@ -13,13 +13,45 @@
   let opener;
   let request = 0;
   let previousOverflow = '';
+  let cssFullscreen = false;
   const visibleWorks = () => allWorks.filter(work => !work.closest('.portfolio-group').hidden);
+  const nativeFullscreenElement = () => document.fullscreenElement || document.webkitFullscreenElement;
+  const isFullscreen = () => cssFullscreen || Boolean(nativeFullscreenElement());
+  const updateFullscreenButton = () => {
+    const active = isFullscreen();
+    fullscreen.textContent = active ? '退出全螢幕' : '全螢幕';
+    fullscreen.setAttribute('aria-pressed', String(active));
+  };
+  const setCssFullscreen = active => {
+    cssFullscreen = active;
+    viewer.classList.toggle('viewer-css-fullscreen', active);
+    document.body.classList.toggle('viewer-css-fullscreen-active', active);
+    updateFullscreenButton();
+  };
+  const enterNativeFullscreen = async () => {
+    if (document.documentElement.requestFullscreen) {
+      await document.documentElement.requestFullscreen({navigationUI:'hide'});
+      return true;
+    }
+    if (document.documentElement.webkitRequestFullscreen) {
+      document.documentElement.webkitRequestFullscreen();
+      return true;
+    }
+    return false;
+  };
+  const exitNativeFullscreen = async () => {
+    if (document.exitFullscreen && document.fullscreenElement) {
+      await document.exitFullscreen();
+      return;
+    }
+    if (document.webkitExitFullscreen && document.webkitFullscreenElement) document.webkitExitFullscreen();
+  };
   function show(index) {
     current = (index + works.length) % works.length;
     const work = works[current];
     const token = ++request;
     caption.textContent = work.dataset.title;
-    counter.textContent = `${current + 1} / ${works.length}`;
+    counter.textContent = (current + 1) + ' / ' + works.length;
     image.alt = work.dataset.title;
     image.src = work.querySelector('img').src;
     status.textContent = '原圖載入中…';
@@ -50,7 +82,8 @@
     request++;
     image.removeAttribute('src');
     document.body.style.overflow = previousOverflow;
-    if (document.fullscreenElement === viewer) document.exitFullscreen().catch(() => {});
+    if (cssFullscreen) setCssFullscreen(false);
+    else if (nativeFullscreenElement()) exitNativeFullscreen().catch(() => {});
     opener?.focus({preventScroll:true});
   });
   document.querySelector('#previous').addEventListener('click', () => show(current - 1));
@@ -61,16 +94,25 @@
       show(current + (event.key === 'ArrowLeft' ? -1 : 1));
     }
   });
-  fullscreen.hidden = !document.fullscreenEnabled;
+  fullscreen.hidden = false;
+  updateFullscreenButton();
   fullscreen.addEventListener('click', async () => {
     try {
-      if (document.fullscreenElement === viewer) await document.exitFullscreen();
-      else await viewer.requestFullscreen();
-    } catch { status.textContent = '此裝置暫時不支援全螢幕。'; }
+      if (isFullscreen()) {
+        if (cssFullscreen) setCssFullscreen(false);
+        else await exitNativeFullscreen();
+      } else if (!await enterNativeFullscreen()) {
+        setCssFullscreen(true);
+      }
+      status.textContent = '';
+      updateFullscreenButton();
+    } catch {
+      setCssFullscreen(true);
+      status.textContent = '';
+    }
   });
-  document.addEventListener('fullscreenchange', () => {
-    fullscreen.textContent = document.fullscreenElement === viewer ? '退出全螢幕' : '全螢幕';
-  });
+  document.addEventListener('fullscreenchange', updateFullscreenButton);
+  document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
   let touchStart;
   const stage = document.querySelector('.viewer-stage');
   stage.addEventListener('touchstart', event => {
@@ -94,7 +136,7 @@
       document.querySelectorAll('.portfolio-group').forEach(group => {
         group.hidden = button.dataset.filter !== 'all' && group.dataset.group !== button.dataset.filter;
       });
-      document.querySelector('.result-count').textContent = `共 ${visibleWorks().length} 件作品`;
+      document.querySelector('.result-count').textContent = '共 ' + visibleWorks().length + ' 件作品';
     });
   }
 })();
