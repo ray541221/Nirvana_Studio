@@ -117,7 +117,7 @@
       const soundOn = !heroVideo.muted && heroVideo.volume > 0;
       const label = soundOn ? '關閉背景音樂' : '開啟背景音樂';
       const slash = audioToggle.querySelector('[data-audio-slash]');
-      if (slash) slash.hidden = soundOn;
+      if (slash) slash.style.display = soundOn ? 'none' : '';
       audioToggle.setAttribute('aria-label', label);
       audioToggle.title = label;
       audioToggle.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
