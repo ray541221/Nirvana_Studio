@@ -58,6 +58,10 @@ jobs:
             -c:v libx264 -preset fast -crf 25 -maxrate 1200k -bufsize 2400k \
             -profile:v high -level:v 3.1 -pix_fmt yuv420p -g 60 \
             -c:a aac -b:a 96k -movflags +faststart Nirvana_Studio/assets/video/hero-720p.mp4
+          ffmpeg -nostdin -y -hide_banner -loglevel error -i Nirvana_Studio/assets/video/hero-720p.mp4 \
+            -map 0:v:0 -map 0:a:0 \
+            -c:v libvpx-vp9 -b:v 0 -crf 34 -deadline good -cpu-used 4 -row-mt 1 \
+            -c:a libopus -b:a 64k Nirvana_Studio/assets/video/hero-720p.webm
           ffmpeg -nostdin -y -hide_banner -loglevel error -ss 0 -i Nirvana_Studio/網站首頁影音.mp4 \
             -frames:v 1 -vf scale=1280:720 -q:v 3 Nirvana_Studio/assets/video/hero-poster.jpg
 
@@ -69,4 +73,3 @@ jobs:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
-
