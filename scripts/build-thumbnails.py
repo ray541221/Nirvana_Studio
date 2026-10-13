@@ -1,5 +1,6 @@
 """Build lightweight portfolio previews without changing the original artwork."""
 from pathlib import Path
+from io import BytesIO
 from PIL import Image, ImageOps
 
 root = Path(__file__).resolve().parents[1] / 'Nirvana_Studio' / 'assets'
@@ -12,7 +13,16 @@ for source in sorted(root.rglob('*')):
     with Image.open(source) as original:
         image = ImageOps.exif_transpose(original).convert('RGB')
         image.thumbnail((960, 960), Image.Resampling.LANCZOS)
-        image.save(target, 'WEBP', quality=80, method=6)
+        buffer = BytesIO()
+        image.save(buffer, 'WEBP', quality=80, method=6)
+        encoded = buffer.getvalue()
+        if not encoded:
+            raise RuntimeError(f'Empty preview: {source}')
+        with Image.open(BytesIO(encoded)) as preview:
+            preview.load()
+        temporary = target.with_suffix('.tmp')
+        temporary.write_bytes(encoded)
+        temporary.replace(target)
     count += 1
     total += target.stat().st_size
     originals += source.stat().st_size
