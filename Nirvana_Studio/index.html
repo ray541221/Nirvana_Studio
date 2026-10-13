@@ -43,22 +43,24 @@
 
     .page-actions {
       position: fixed;
-      top: 20px;
+      top: auto;
       right: 20px;
+      bottom: 20px;
       z-index: 2;
       display: flex;
       gap: 9px;
       flex-wrap: wrap;
-      justify-content: flex-start;
+      justify-content: flex-end;
     }
 
     .page-link {
-      border: 1px solid rgba(255, 255, 255, .5);
+      border: 1px solid rgba(255, 215, 0, .55);
       border-radius: 999px;
       padding: 12px 18px;
-      color: rgba(255, 255, 255, .5);
+      color: rgba(255, 215, 0, .8);
       background: rgba(0, 0, 0, .35);
       font-size: 16px;
+      font-weight: 700;
       line-height: 1;
       text-decoration: none;
       cursor: pointer;
@@ -67,17 +69,24 @@
     .audio-toggle {
       position: fixed;
       top: 20px;
-      left: 20px;
+      right: 20px;
       z-index: 3;
-      border: 1px solid rgba(255, 255, 255, .5);
-      border-radius: 999px;
-      padding: 11px 16px;
-      color: rgba(255, 255, 255, .75);
-      background: rgba(0, 0, 0, .35);
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1;
+      width: 50px;
+      height: 50px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid rgba(215, 181, 109, .8);
+      border-radius: 50%;
+      color: #D7B56D;
+      background: rgba(80, 80, 80, .88);
       cursor: pointer;
+    }
+
+    .audio-toggle svg {
+      width: 31px;
+      height: 31px;
+      display: block;
     }
 
     .page-link {
@@ -127,11 +136,17 @@
 
       .audio-toggle {
         top: max(12px, env(safe-area-inset-top));
-        left: max(14px, env(safe-area-inset-left));
+        right: max(14px, env(safe-area-inset-right));
+        left: auto;
+        width: 44px;
+        height: 44px;
         border-color: rgba(255, 215, 0, .5);
-        color: rgba(255, 215, 0, .65);
-        padding: 9px 13px;
-        font-size: 13px;
+        background: rgba(80, 80, 80, .88);
+      }
+
+      .audio-toggle svg {
+        width: 28px;
+        height: 28px;
       }
 
     }
@@ -140,18 +155,27 @@
 <body>
   <main>
     <div class="video-stage">
-      <video id="heroVideo" poster="./assets/video/hero-poster.jpg" preload="auto" muted loop playsinline aria-label="Nirvana Studio 首頁影片"></video>
+      <video id="heroVideo" poster="./assets/video/hero-poster.jpg" preload="auto" autoplay loop playsinline aria-label="Nirvana Studio 首頁影片"></video>
       <noscript><p><a href="./assets/video/hero-720p.mp4">播放首頁影片</a></p></noscript>
-      <button class="audio-toggle" id="audioToggle" type="button" aria-pressed="false">開啟背景音樂</button>
+      <button class="audio-toggle" id="audioToggle" type="button" aria-label="關閉背景音樂" aria-pressed="true" title="關閉背景音樂">
+        <svg viewBox="0 0 360 360" aria-hidden="true" focusable="false">
+          <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M84 154h44l66-54v160l-66-54H84z" stroke-width="18"/>
+            <path d="M112 108l154 144" stroke-width="21"/>
+          </g>
+        </svg>
+      </button>
       <nav class="page-actions" aria-label="頁面導覽">
-        <a class="page-link" href="./page2.html#works">作品展示區</a>
-        <a class="page-link" href="./page2.html#contact">聯絡我們</a>
+        <a class="page-link" href="./page2.html#works" aria-label="進入作品區">進入 <span aria-hidden="true">→</span></a>
       </nav>
     </div>
   </main>
   <script>
     const heroVideo = document.querySelector('#heroVideo');
     const audioToggle = document.querySelector('#audioToggle');
+
+    heroVideo.muted = false;
+    heroVideo.volume = 1;
 
     const MIN_BUFFER_SECONDS = 3;
     const connection = navigator.connection;
@@ -207,7 +231,9 @@
 
     function updateAudioButton() {
       const soundOn = !heroVideo.muted && heroVideo.volume > 0;
-      audioToggle.textContent = soundOn ? '關閉背景音樂' : '開啟背景音樂';
+      const label = soundOn ? '關閉背景音樂' : '開啟背景音樂';
+      audioToggle.setAttribute('aria-label', label);
+      audioToggle.title = label;
       audioToggle.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
     }
 
