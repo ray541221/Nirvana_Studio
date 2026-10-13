@@ -6,158 +6,59 @@
   <link rel="preload" as="image" href="./assets/video/hero-poster.jpg" fetchpriority="high">
   <title>網站首頁影音</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      background: #000;
-      overflow: hidden;
+    * { box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%; margin: 0; background: #000; overflow: hidden;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-
-    main {
-      width: 100vw;
-      height: 100svh;
-      background: #000;
-    }
-
-    .video-stage {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background: #000;
-    }
-
-    video {
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: cover;
-      background: #000;
-    }
-
+    main { width: 100vw; height: 100svh; background: #000; }
+    .video-stage { position: relative; width: 100%; height: 100%; background: #000; }
+    video { width: 100%; height: 100%; display: block; object-fit: cover; background: #000; }
     .page-actions {
-      position: fixed;
-      top: auto;
-      right: 20px;
-      bottom: 20px;
-      z-index: 2;
-      display: flex;
-      gap: 9px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+      position: fixed; top: auto; right: 20px; bottom: 20px; z-index: 2;
+      display: flex; gap: 9px; flex-wrap: wrap; justify-content: flex-end;
     }
-
     .page-link {
-      border: 1px solid rgba(255, 215, 0, .55);
-      border-radius: 999px;
-      padding: 12px 18px;
-      color: rgba(255, 215, 0, .8);
-      background: rgba(0, 0, 0, .35);
-      font-size: 16px;
-      font-weight: 700;
-      line-height: 1;
-      text-decoration: none;
-      cursor: pointer;
+      border: 1px solid rgba(255, 215, 0, .55); border-radius: 999px; padding: 12px 18px;
+      color: rgba(255, 215, 0, .8); background: rgba(0, 0, 0, .35); font-size: 16px;
+      font-weight: 700; line-height: 1; text-decoration: none; cursor: pointer;
     }
-
     .audio-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 3;
-      width: 50px;
-      height: 50px;
-      display: grid;
-      place-items: center;
-      padding: 0;
-      border: 1px solid rgba(215, 181, 109, .8);
-      border-radius: 50%;
-      color: #D7B56D;
-      background: rgba(80, 80, 80, .88);
-      cursor: pointer;
+      position: fixed; top: 20px; right: 20px; z-index: 3; width: 50px; height: 50px;
+      display: grid; place-items: center; padding: 0; border: 1px solid rgba(215, 181, 109, .8);
+      border-radius: 50%; color: #D7B56D; background: rgba(80, 80, 80, .88); cursor: pointer;
     }
-
-    .audio-toggle svg {
-      width: 31px;
-      height: 31px;
-      display: block;
-    }
-
-    .page-link {
-      padding: 11px 16px;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
+    .audio-toggle svg { width: 31px; height: 31px; display: block; }
+    .page-link { padding: 11px 16px; font-size: 14px; font-weight: 700; }
     @media (max-width: 768px), (max-aspect-ratio: 1/1) {
-      main {
-        display: grid;
-        place-items: center;
-      }
-
-      .video-stage {
-        width: 100vw;
-        height: auto;
-        aspect-ratio: 16 / 9;
-        max-height: 100svh;
-      }
-
-      video {
-        object-fit: contain;
-      }
-
+      main { display: grid; place-items: center; }
+      .video-stage { width: 100vw; height: auto; aspect-ratio: 16 / 9; max-height: 100svh; }
+      video { object-fit: contain; }
       .page-actions {
-        top: auto;
-        left: auto;
-        right: max(14px, env(safe-area-inset-right));
-        bottom: max(12px, env(safe-area-inset-bottom));
-        max-width: calc(100vw - 28px);
-        gap: 8px;
-        justify-content: flex-end;
+        top: auto; left: auto; right: max(14px, env(safe-area-inset-right));
+        bottom: max(12px, env(safe-area-inset-bottom)); max-width: calc(100vw - 28px);
+        gap: 8px; justify-content: flex-end;
       }
-
       .page-link {
-        border-color: rgba(255, 215, 0, .5);
-        color: rgba(255, 215, 0, .5) !important;
-        padding: 9px 13px;
-        font-size: 13px;
+        border-color: rgba(255, 215, 0, .5); color: rgba(255, 215, 0, .5) !important;
+        padding: 9px 13px; font-size: 13px;
       }
-
-      .page-link {
-        padding: 9px 13px;
-        font-size: 13px;
-      }
-
+      .page-link { padding: 9px 13px; font-size: 13px; }
       .audio-toggle {
-        top: max(12px, env(safe-area-inset-top));
-        right: max(14px, env(safe-area-inset-right));
-        left: auto;
-        width: 44px;
-        height: 44px;
-        border-color: rgba(255, 215, 0, .5);
+        top: max(12px, env(safe-area-inset-top)); right: max(14px, env(safe-area-inset-right));
+        left: auto; width: 44px; height: 44px; border-color: rgba(255, 215, 0, .5);
         background: rgba(80, 80, 80, .88);
       }
-
-      .audio-toggle svg {
-        width: 28px;
-        height: 28px;
-      }
-
+      .audio-toggle svg { width: 28px; height: 28px; }
     }
   </style>
 </head>
 <body>
   <main>
     <div class="video-stage">
-      <video id="heroVideo" poster="./assets/video/hero-poster.jpg" preload="auto" autoplay loop playsinline aria-label="Nirvana Studio 首頁影片"></video>
+      <video id="heroVideo" poster="./assets/video/hero-poster.jpg" preload="auto" autoplay muted loop playsinline aria-label="Nirvana Studio 首頁影片"></video>
       <noscript><p><a href="./assets/video/hero-720p.mp4">播放首頁影片</a></p></noscript>
-      <button class="audio-toggle" id="audioToggle" type="button" aria-label="關閉背景音樂" aria-pressed="true" title="關閉背景音樂">
+      <button class="audio-toggle" id="audioToggle" type="button" aria-label="開啟背景音樂" aria-pressed="false" title="開啟背景音樂">
         <svg viewBox="0 0 360 360" aria-hidden="true" focusable="false">
           <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
             <path d="M84 154h44l66-54v160l-66-54H84z" stroke-width="18"/>
@@ -173,29 +74,19 @@
   <script>
     const heroVideo = document.querySelector('#heroVideo');
     const audioToggle = document.querySelector('#audioToggle');
-
-    heroVideo.muted = false;
-    heroVideo.volume = 1;
-
+    heroVideo.muted = true;
+    heroVideo.volume = 0;
     const MIN_BUFFER_SECONDS = 3;
     const connection = navigator.connection;
     const isFastLargeDesktop = window.matchMedia('(min-width: 1600px)').matches
-      && connection
-      && connection.effectiveType === '4g'
-      && Number(connection.downlink) >= 8
-      && !connection.saveData;
-    const mp4Source = isFastLargeDesktop
-      ? './assets/video/hero-1080p.mp4'
-      : './assets/video/hero-720p.mp4';
+      && connection && connection.effectiveType === '4g'
+      && Number(connection.downlink) >= 8 && !connection.saveData;
+    const mp4Source = isFastLargeDesktop ? './assets/video/hero-1080p.mp4' : './assets/video/hero-720p.mp4';
     const canPlayWebm = heroVideo.canPlayType('video/webm; codecs="vp9, opus"') !== '';
-    const preferredSource = canPlayWebm && !isFastLargeDesktop
-      ? './assets/video/hero-720p.webm'
-      : mp4Source;
+    const preferredSource = canPlayWebm && !isFastLargeDesktop ? './assets/video/hero-720p.webm' : mp4Source;
     let playbackStarted = false;
-
     heroVideo.src = preferredSource;
     heroVideo.load();
-
     function bufferedAhead() {
       const currentTime = heroVideo.currentTime;
       for (let i = 0; i < heroVideo.buffered.length; i += 1) {
@@ -205,7 +96,6 @@
       }
       return 0;
     }
-
     async function tryStartPlayback() {
       if (playbackStarted || heroVideo.readyState < HTMLMediaElement.HAVE_FUTURE_DATA) return;
       if (bufferedAhead() < MIN_BUFFER_SECONDS) return;
@@ -217,7 +107,6 @@
         // Keep the poster visible if autoplay is blocked by the browser.
       }
     }
-
     const bufferPoll = window.setInterval(tryStartPlayback, 250);
     heroVideo.addEventListener('loadeddata', tryStartPlayback);
     heroVideo.addEventListener('canplay', tryStartPlayback);
@@ -228,7 +117,6 @@
         heroVideo.load();
       }
     }, { once: true });
-
     function updateAudioButton() {
       const soundOn = !heroVideo.muted && heroVideo.volume > 0;
       const label = soundOn ? '關閉背景音樂' : '開啟背景音樂';
@@ -236,22 +124,16 @@
       audioToggle.title = label;
       audioToggle.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
     }
-
     async function setAudio(enabled) {
       heroVideo.muted = !enabled;
       heroVideo.volume = enabled ? 1 : 0;
       try {
-        if (!playbackStarted) {
-          await tryStartPlayback();
-        } else {
-          await heroVideo.play();
-        }
+        if (!playbackStarted) { await tryStartPlayback(); } else { await heroVideo.play(); }
       } catch (error) {
         heroVideo.muted = true;
       }
       updateAudioButton();
     }
-
     audioToggle.addEventListener('click', () => {
       setAudio(heroVideo.muted || heroVideo.volume === 0);
     });
