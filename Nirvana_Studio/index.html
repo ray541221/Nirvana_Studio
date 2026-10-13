@@ -56,7 +56,7 @@
 <body>
   <main>
     <div class="video-stage">
-      <video id="heroVideo" poster="./assets/video/hero-poster.jpg" preload="auto" autoplay muted loop playsinline aria-label="Nirvana Studio 首頁影片"></video>
+      <video id="heroVideo" poster="./assets/video/hero-poster.jpg" preload="auto" autoplay muted loop playsinline disableRemotePlayback x-webkit-airplay="deny" aria-label="Nirvana Studio 首頁影片"></video>
       <noscript><p><a href="./assets/video/hero-720p.mp4">播放首頁影片</a></p></noscript>
       <button class="audio-toggle" id="audioToggle" type="button" aria-label="開啟背景音樂" aria-pressed="false" title="開啟背景音樂">
         <svg viewBox="0 0 360 360" aria-hidden="true" focusable="false">
@@ -76,6 +76,7 @@
     const audioToggle = document.querySelector('#audioToggle');
     heroVideo.muted = true;
     heroVideo.volume = 0;
+    heroVideo.disableRemotePlayback = true;
     const MIN_BUFFER_SECONDS = 3;
     const connection = navigator.connection;
     const isFastLargeDesktop = window.matchMedia('(min-width: 1600px)').matches
@@ -128,9 +129,14 @@
       heroVideo.muted = !enabled;
       heroVideo.volume = enabled ? 1 : 0;
       try {
-        if (!playbackStarted) { await tryStartPlayback(); } else { await heroVideo.play(); }
+        await heroVideo.play();
+        playbackStarted = true;
+        window.clearInterval(bufferPoll);
       } catch (error) {
-        heroVideo.muted = true;
+        if (enabled) {
+          heroVideo.muted = true;
+          heroVideo.volume = 0;
+        }
       }
       updateAudioButton();
     }
