@@ -11,9 +11,25 @@
       width: 100%; min-height: 100%; margin: 0; background: #000; overflow-x: hidden; overflow-y: auto; overscroll-behavior-y: auto; touch-action: pan-y;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-    main { width: 100vw; height: 100svh; background: #000; }
-    .video-stage { position: relative; width: 100%; height: 100%; background: #000; }
+    main { position: relative; width: 100vw; height: 100svh; background: #000; overflow: hidden; }
+    .video-stage { position: relative; z-index: 1; width: 100%; height: 100%; background: #000; }
     video { width: 100%; height: 100%; display: block; object-fit: cover; background: #000; }
+    .liquid-gold {
+      position: absolute; z-index: 2; left: 0; right: 0; bottom: 0; height: min(34svh, 360px);
+      pointer-events: none; overflow: hidden; opacity: .86; mix-blend-mode: screen;
+    }
+    .liquid-gold svg { width: 100%; height: 100%; display: block; }
+    .liquid-gold .gold-glow { fill: none; stroke: #d7b56d; stroke-width: 14; opacity: .22; filter: url(#goldGlow); }
+    .liquid-gold .gold-ribbon { fill: none; stroke: url(#liquidGold); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 160 920; animation: gold-flow 18s linear infinite; }
+    .liquid-gold .gold-ribbon.thin { stroke-width: 1.5; opacity: .72; stroke-dasharray: 80 420; animation-duration: 24s; animation-direction: reverse; }
+    .liquid-gold .gold-speck { fill: #f3d99b; opacity: .7; animation: gold-float 8s ease-in-out infinite alternate; }
+    .liquid-gold .gold-speck:nth-of-type(2) { animation-delay: -2s; }
+    .liquid-gold .gold-speck:nth-of-type(3) { animation-delay: -4s; }
+    @keyframes gold-flow { to { stroke-dashoffset: -1080; } }
+    @keyframes gold-float { to { transform: translateY(-14px); opacity: .25; } }
+    @media (prefers-reduced-motion: reduce) {
+      .liquid-gold .gold-ribbon, .liquid-gold .gold-speck { animation: none; }
+    }
     .page-actions {
       position: fixed; top: auto; right: 20px; bottom: 20px; z-index: 3;
       display: flex; flex-direction: column; align-items: flex-end; gap: 2px; justify-content: flex-end;
@@ -64,6 +80,28 @@
         </button>
         <a class="page-link" href="./page2.html#works" aria-label="進入作品區">進入 <span aria-hidden="true">→</span></a>
       </nav>
+    </div>
+    <div class="liquid-gold" aria-hidden="true">
+      <svg viewBox="0 0 1000 360" preserveAspectRatio="none" focusable="false">
+        <defs>
+          <linearGradient id="liquidGold" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#8e682c" stop-opacity=".15" />
+            <stop offset=".28" stop-color="#e6c37b" />
+            <stop offset=".54" stop-color="#fff1b9" />
+            <stop offset=".76" stop-color="#b88534" />
+            <stop offset="1" stop-color="#e7c77d" stop-opacity=".18" />
+          </linearGradient>
+          <filter id="goldGlow" x="-20%" y="-40%" width="140%" height="180%">
+            <feGaussianBlur stdDeviation="12" />
+          </filter>
+        </defs>
+        <path class="gold-glow" d="M-30 286 C130 176 214 314 354 238 S565 118 704 232 S886 322 1030 188" />
+        <path class="gold-ribbon" d="M-30 286 C130 176 214 314 354 238 S565 118 704 232 S886 322 1030 188" />
+        <path class="gold-ribbon thin" d="M-30 316 C120 216 236 338 388 266 S575 154 730 254 S900 334 1030 222" />
+        <circle class="gold-speck" cx="192" cy="254" r="3" />
+        <circle class="gold-speck" cx="624" cy="198" r="2.5" />
+        <circle class="gold-speck" cx="836" cy="264" r="2" />
+      </svg>
     </div>
   </main>
   <script>
