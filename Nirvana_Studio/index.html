@@ -65,15 +65,13 @@
       .page-actions { position: fixed; right: 24px; bottom: 24px; }
     }
     @media (orientation: landscape) and (max-height: 700px) {
-      main.home-page { display: grid; grid-template-rows: 34% 32% 34%; background: #050505; }
-      .ambient { display: block; }
-      .video-stage { width: 100%; height: 100%; background: #000; }
-      video { background: #000; }
-      .page-actions { position: absolute; }
-      .ambient-copy { left: 17%; right: 5%; }
-      .ambient-copy::before { left: -24px; top: -42px; height: 120px; }
-      .ambient-bottom .ambient-copy { top: 22%; }
-      .page-actions { right: 6%; bottom: max(6%, env(safe-area-inset-bottom)); gap: 18px; }
+      /* Landscape phones use the video as the complete viewport. The portrait
+         black/gold composition must not squeeze the video into a middle row. */
+      main.home-page { display: block; width: 100vw; height: 100dvh; min-height: 100dvh; background: #000; }
+      .ambient { display: none; }
+      .video-stage { width: 100vw; height: 100dvh; background: #000; }
+      video { width: 100%; height: 100%; object-fit: cover; background: #000; }
+      .page-actions { position: fixed; right: 6%; bottom: max(6%, env(safe-area-inset-bottom)); gap: 18px; }
       .page-link { min-width: 164px; padding-block: 12px; }
     }
     @media (max-width: 420px) {
